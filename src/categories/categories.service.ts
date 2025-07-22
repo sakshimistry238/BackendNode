@@ -15,6 +15,12 @@ export class CategoriesService {
         { name: 'Clothing' },
         { name: 'Electronics' },
         { name: 'Books' },
+        { name: 'Fashion' },
+        { name: 'Kitchen' },
+        { name: 'Decorations' },
+        { name: 'Kids' },
+        { name: 'Toys' },
+        { name: 'Make Up' },
       ]);
     } catch (error) {}
   }
