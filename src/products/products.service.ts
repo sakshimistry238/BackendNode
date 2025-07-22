@@ -11,7 +11,7 @@ import { ListDto } from './dto/list.dto';
 export class ProductsService {
   constructor(
     @InjectModel(Product.name) private productModel: Model<ProductDocument>,
-  ) { }
+  ) {}
   async create(createProductDto: CreateProductDto): Promise<Product> {
     const existing = await this.productModel.findOne({
       name: createProductDto.name,
@@ -19,7 +19,10 @@ export class ProductsService {
     if (existing) {
       throw TypeExceptions.ProductAlreadyExists();
     }
-    const createdProduct = new this.productModel({ ...createProductDto, categories: new mongoose.Types.ObjectId(createProductDto.categories) });
+    const createdProduct = new this.productModel({
+      ...createProductDto,
+      categories: new mongoose.Types.ObjectId(createProductDto.categories),
+    });
     return createdProduct.save();
   }
 
@@ -32,7 +35,7 @@ export class ProductsService {
         sortBy = 'createdAt',
         sortOrder = 'desc',
         search = '',
-        categoryIds
+        categoryIds,
       } = query;
       // Default fallback to prevent empty string issue
       sortBy = sortBy?.trim() || 'createdAt';
@@ -43,8 +46,10 @@ export class ProductsService {
       if (categoryIds && categoryIds.length > 0) {
         aggregationQuery.push({
           $match: {
-            categories: { $in: categoryIds.map(id => new Types.ObjectId(id)) }
-          }
+            categories: {
+              $in: categoryIds.map((id) => new Types.ObjectId(id)),
+            },
+          },
         });
       }
       // 🔍 Search filter (by name or description)
@@ -99,7 +104,6 @@ export class ProductsService {
         },
       });
 
-
       const result = await this.productModel.aggregate(aggregationQuery).exec();
       return result[0] || { total: 0, data: [] };
     } catch (error) {
@@ -107,14 +111,13 @@ export class ProductsService {
     }
   }
 
-
   async findOne(id: string) {
     try {
-      const product = await this.productModel.findById(id)
+      const product = await this.productModel.findById(id);
       if (!product) {
-        throw TypeExceptions.ProductNotFound()
+        throw TypeExceptions.ProductNotFound();
       }
-      return product
+      return product;
     } catch (error) {
       throw error;
     }
@@ -122,17 +125,26 @@ export class ProductsService {
 
   async update(id: string, updateProductDto: UpdateProductDto) {
     try {
-      const product = await this.productModel.findById(id)
+      const product = await this.productModel.findById(id);
       if (!product) {
-        throw TypeExceptions.ProductNotFound()
+        throw TypeExceptions.ProductNotFound();
       }
       const updated = await this.productModel
-        .findByIdAndUpdate(id, {...updateProductDto, categories: new mongoose.Types.ObjectId(updateProductDto.categories)}, {
-          new: true,
-        })
+        .findByIdAndUpdate(
+          id,
+          {
+            ...updateProductDto,
+            categories: new mongoose.Types.ObjectId(
+              updateProductDto.categories,
+            ),
+          },
+          {
+            new: true,
+          },
+        )
         // .populate('categories', 'name') // Populate after update
         .exec();
-      return updated
+      return updated;
     } catch (error) {
       throw error;
     }
@@ -140,11 +152,11 @@ export class ProductsService {
 
   async remove(id: string) {
     try {
-      const product = await this.productModel.findById(id)
+      const product = await this.productModel.findById(id);
       if (!product) {
-        throw TypeExceptions.ProductNotFound()
+        throw TypeExceptions.ProductNotFound();
       }
-      await this.productModel.findByIdAndDelete(id)
+      await this.productModel.findByIdAndDelete(id);
     } catch (error) {
       throw error;
     }

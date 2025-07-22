@@ -25,7 +25,7 @@ export class CreateProductDto {
   quantity: number;
 
   @ApiProperty()
-   @IsNotEmpty()
+  @IsNotEmpty()
   @IsString()
   categories: string;
 }

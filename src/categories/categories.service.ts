@@ -19,11 +19,9 @@ export class CategoriesService {
     } catch (error) {}
   }
 
-  async getCategoryList(){
+  async getCategoryList() {
     try {
       return await this.categoryModel.find();
-    } catch (error) {
-      
-    }
+    } catch (error) {}
   }
 }
